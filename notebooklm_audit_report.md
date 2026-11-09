@@ -1,74 +1,70 @@
 # NotebookLM Grounding and Audio Overview Audit — Evidence Status
 
 **Course:** Conversational AI, Winter Semester 2026/2027  
-**Assignment:** PS05  
-**Status:** INCOMPLETE — empirical results not yet verified  
-**Last evaluator output supplied:** 4 November 2026
+**Component:** PS05 Part 3 — NotebookLM grounding, citation audit, negative probes, and Audio Overview  
+**Status:** **INCOMPLETE — empirical observations are not yet verified**
 
-## 1. Purpose
+## Purpose and method
 
-This audit is intended to evaluate NotebookLM on three dimensions: citation entailment for grounded answers, epistemic restraint on questions that cannot be answered from the supplied sources, and the factual/pedagogical quality of a NotebookLM Audio Overview.
+The assignment asks for a manual evaluation of NotebookLM using three source documents, five grounded queries, three questions that cannot be answered from the source corpus, and an Audio Overview of at least two minutes. The evaluator in `03_NotebookLM_RAG_Audit.py` reads observations entered into `audit_evidence_template.json`; it does not operate NotebookLM.
 
-The Python evaluator assesses evidence manually entered into `audit_evidence_template.json`. It does not connect to NotebookLM and cannot independently confirm that source files were uploaded, citation badges were clicked, highlighted passages appeared, or an Audio Overview was generated.
+## Captured evaluator output
 
-## 2. Current evaluator results
+The executed integration notebook recorded the following:
 
-The user's actual terminal output reported the following:
-
-| Measure | Current result |
+| Check | Recorded result |
 |---|---:|
 | Source records | 3 |
-| Grounded queries recorded | 5 |
+| Grounded query records | 5 |
 | Citation records | 5 |
-| Entailed citations verified | 0 |
-| Citation precision | 0.0 |
+| Verified entailed citations | 0 |
+| Citation precision field | 0.0 |
 | Citation badge interactions verified | 0 |
 | Highlighted source spans recorded | 0 |
-| Negative probes recorded | 3 |
-| Proper refusals verified | 0 |
-| Epistemic refusal rate | 0.0 |
-| Audio average score | Not available (`null`) |
-| Audio duration | Not available (`null`) |
-| Overall audit status | **INCOMPLETE** |
+| Negative-probe records | 3 |
+| Verified proper refusals | 0 |
+| Epistemic refusal-rate field | 0.0 |
+| Audio average score | Not available |
+| Audio duration | Not available |
+| Evaluator status | **INCOMPLETE** |
+| Items requiring evidence/correction | 47 |
 
-The evaluator reported 47 items requiring evidence or correction. These include missing source upload/ingestion confirmations, missing actual query/response text, unverified citation entailment and citation badge interactions, missing highlighted source spans, incomplete negative-probe records, and missing Audio Overview evidence, duration, transcript, rubric scores, and notes.
+The zero values mean that no positive verification was recorded in the supplied evidence data. They must not be interpreted as proof that NotebookLM generated no citations or always failed to refuse. Likewise, the three probe records do not prove that the probes were actually executed in NotebookLM.
 
-## 3. Interpretation and reporting rule
+## Evidence required to complete the audit
 
-Earlier draft material stated 14/14 entailed citations (100%), 3/3 appropriate refusals (100%), and a 5.0/5.0 Audio Overview score. The current evidence file and evaluator output do **not** substantiate those figures. Do not report them as measured results unless the raw supporting evidence is completed and checked.
+### 1. Source ingestion
 
-A successful run of the evaluator demonstrates that the code executed; it does not itself prove that NotebookLM performed well. Until evidence is entered, citation precision, refusal rate, and audio quality should be reported as **not verified**, not as a pass.
+For each of the three intended sources, record its exact title, confirm that it was uploaded, and add an observation that supports successful ingestion. Do not mark upload as confirmed based only on the planned source list.
 
-## 4. Evidence required to complete the audit
+### 2. Five grounded queries and citations
 
-### 4.1 Three source documents
+For every query, preserve the exact question and actual NotebookLM response. For every citation displayed, record:
 
-For each source, record the exact document title, whether it was uploaded to NotebookLM, and an evidence note confirming that NotebookLM ingested it. The intended corpus is:
+- the claim the citation is intended to support;
+- whether the citation badge was clicked;
+- the highlighted source passage;
+- whether that passage entails the claim;
+- a short rationale for the entailment decision.
 
-1. Lewis et al. (2020), *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*.
-2. Edge et al. (2024), *From Local to Global: A Graph RAG Approach to Query-Focused Summarization*.
-3. The fictional USSE Noosphere technical archive/PS05 briefing used for the assignment.
+Compute citation precision only from reviewed citations, and show the numerator and denominator. If no citation was reviewed, report the metric as not established rather than claiming a measured score.
 
-### 4.2 Five grounded queries
+### 3. Three unanswerable probes
 
-For each query, preserve the actual query and full NotebookLM response. For every citation, record the claim it is meant to support, the visible citation badge, whether the badge was clicked, the highlighted source span, and an independently justified entailment decision. Count only verified citation decisions in the metric.
+Preserve the exact question and actual response. Explain why the source corpus does not contain enough information to answer. Record whether NotebookLM refused, qualified the answer, or supplied unsupported content. A generic disclaimer alone is not sufficient evidence of a proper refusal.
 
-### 4.3 Three unanswerable probes
+### 4. Audio Overview
 
-Preserve each exact query and actual response. Explain which required fact is absent from the supplied sources and whether the response appropriately refused, qualified its answer, or identified the evidence gap. Do not count an answer as a proper refusal merely because it contains a disclaimer.
+Record evidence that the Audio Overview was generated, the audio reference, measured duration, and a verbatim two-minute transcript. Confirm whether the transcript is verbatim. Score factual fidelity, persona differentiation, and pedagogical value from 1 to 5, with evidence-based notes. Do not invent a transcript or label a paraphrase as verbatim.
 
-### 4.4 Audio Overview
+## Metric definitions
 
-Record the actual Audio Overview file or evidence reference and its measured duration. The assignment requires at least 120 seconds. Include a verbatim two-minute dialogue transcript, then score factual fidelity, persona differentiation, and pedagogical value from 1 to 5 with brief evidence-based justifications. A synthetic or paraphrased summary must not be labelled as a verbatim NotebookLM transcript.
+- **Citation precision:** entailed citations verified ÷ all citations evaluated.
+- **Epistemic refusal rate:** unanswerable probes with a verified appropriate refusal/qualification ÷ unanswerable probes evaluated.
+- **Audio rating:** mean of the three rubric scores, calculated only after the audio and transcript have been reviewed.
 
-## 5. Metric definitions
+Report counts as well as ratios. If evidence is missing, label the metric **not verified** or **not available**.
 
-- **Citation precision:** verified entailed citations divided by all citations evaluated.
-- **Epistemic refusal rate:** appropriate refusals/limitations divided by the three evaluated unanswerable probes.
-- **Audio score:** arithmetic mean of the three rubric scores (factual fidelity, persona differentiation, pedagogical value), each from 1 to 5, only after the actual audio and transcript have been reviewed.
+## Conclusion
 
-Report numerator and denominator alongside percentages, and retain evidence for each decision.
-
-## 6. Conclusion
-
-The evaluator ran successfully, but the NotebookLM audit is not yet complete. The current verified status is **INCOMPLETE**. No citation-precision percentage, refusal-rate percentage, or Audio Overview rating is established by the supplied evidence. Update this report after the evidence template is completed from actual NotebookLM outputs and the evaluator is rerun.
+The evaluator executed and correctly marked the evidence record as incomplete. The current repository does not establish a measured NotebookLM citation-precision score, refusal rate, or Audio Overview rating. Complete the evidence template from actual NotebookLM observations and rerun the evaluator before making performance claims.

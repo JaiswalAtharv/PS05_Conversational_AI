@@ -1,43 +1,126 @@
-# Mission 05: Dual-Path GraphRAG, Hybrid Search & The Google NotebookLM Grounding Lab
+# PS05 — Hybrid Retrieval, NotebookLM Audit, and RAG Safety
 
-**Starship Operational Unit:** USSE Noosphere Bridge Crew  
-**Course:** Conversational AI — Winter Semester 2026/27  
-**Module:** Week 5 — Grounding AI: From Vector Indexing to Google NotebookLM & GraphRAG  
-**Waypoint:** Crab Pulsar Remnant / Messier 1 (`SEC-05-M01`, 6,500 ly from Sol)  
-**IDE & Tools Standard:** Visual Studio Code + Antigravity (`agy`) | PyTorch 2.4+ / Python 3.11+ / Google NotebookLM  
-**Instructor Reference Repository:** [https://github.com/Unisvet/couse-c-ai](https://github.com/Unisvet/couse-c-ai)  
+**Course:** Conversational AI, Winter Semester 2026/2027  
+**Repository:** [PS05_Conversational_AI](https://github.com/JaiswalAtharv/PS05_Conversational_AI)
 
----
+This repository contains a Python implementation and an integration notebook for the four technical workstreams in Problem Set 05: approximate vector search, lexical retrieval and rank fusion, evidence-based NotebookLM auditing, and retrieval-context safety/provenance.
 
-## Mission Folder Structure & Role Deliverables
+> **Scope note:** `ps05_briefing.md` is the assignment specification. This README describes the code and observations in this repository; it does not claim that every empirical part of the assignment is complete.
 
-This repository folder contains the starter assets and templates for **Mission 5**.
+## Repository contents
 
+| File | Purpose |
+|---|---|
+| `01_HNSW_Vector_Index.py` | Pure Python/NumPy hierarchical graph index, cosine-distance search, graph validation, exact-search baseline, smoke tests, and configurable benchmark. |
+| `02_BM25_and_RRF_Combiner.py` | Tokenization, BM25 lexical scoring, weighted Reciprocal Rank Fusion, demonstrations, and smoke tests. |
+| `03_NotebookLM_RAG_Audit.py` | Evaluates manually recorded NotebookLM evidence from JSON; it does not connect to or operate NotebookLM itself. |
+| `04_RAG_Provenance_and_Safety.py` | Heuristic and optional embedding-based indirect prompt-injection screening, lexical RAG-triad proxy scores, and structured provenance logs. |
+| `ps05_solution.ipynb` | Integration/reproducibility notebook with commands and explanations. |
+| `ps05_solution_executed.ipynb` | Notebook containing captured outputs from a run; see the result and limitation notes below. |
+| `audit_evidence_template.json` | Evidence record used by the NotebookLM audit evaluator. |
+| `notebooklm_audit_report.md` | Current NotebookLM evidence status and outstanding work. |
+| `03_NotebookLM_Grounding_Lab_template.md` | Assignment laboratory template retained for reference. |
+| `Document_C_USSE_Noosphere_Technical_Archive_Extract.md` | Fictional technical archive used as one possible source for the assignment. |
+| `ps05_briefing.md` | Assignment instructions; retained separately from the solution report. |
+| `PS05_Solution_Report.md` | Implementation and experiment report for this repository. |
+| `03_NotebookLM_Grounding_Lab_Report.md` | Evidence-status report for the NotebookLM component. |
+
+## Requirements
+
+- Python 3.10+ is recommended for the type annotations used in the scripts.
+- NumPy is required by the HNSW and safety scripts.
+- `sentence-transformers` is optional for semantic similarity screening in the injection detector. The detector reports embedding screening as unavailable if the dependency/model cannot be loaded; it does not silently treat that state as a successful scan.
+- Jupyter Notebook or JupyterLab is needed to run the `.ipynb` files. The notebook uses IPython `%run` commands.
+
+Install the core dependency:
+
+```bash
+python -m pip install numpy
 ```
-mission-05/
-├── README.md                                                  <- Mission overview & squad sign-off status
-├── ps05_briefing.md                                           <- Full mission specification & problem statement
-├── Document_C_USSE_Noosphere_Technical_Archive_Extract.md     <- Document C for Part 3 (NotebookLM Grounding Lab)
-├── 01_HNSW_Vector_Index_starter.py                            <- Starter script (Systems Architect)
-├── 02_BM25_and_RRF_Combiner_starter.py                        <- Starter script (Protocol Officer)
-├── 03_NotebookLM_Grounding_Lab_template.md                    <- Laboratory template (Data Specialist)
-└── 04_Prompt_Injection_and_RAG_Audit_starter.py               <- Defense & RAG triad audit (Security Sentinel)
+
+Optional embedding support:
+
+```bash
+python -m pip install sentence-transformers
 ```
 
----
+The first use of the optional model may need an internet connection to download model weights.
 
-## Station Role Deliverables Checklist
+## Run the components
 
-Before transmitting your team's repository link on the course website submission portal, complete all deliverables and record digital sign-offs from all four station officers:
+Run commands from the repository directory.
 
-- [ ] **Systems Architect (`01_HNSW_Vector_Index_starter.py`):** Pure Python/NumPy HNSW graph indexing, logarithmic skip-list traversal, and benchmark against brute-force flat search.
-- [ ] **Communications & Protocol Officer (`02_BM25_and_RRF_Combiner_starter.py`):** Okapi BM25 lexical scorer and Reciprocal Rank Fusion ($k=60$) combiner merging dense & sparse candidate streams.
-- [ ] **Data & Payload Specialist (`03_NotebookLM_Grounding_Lab_template.md`):** Google NotebookLM empirical laboratory: source-grounded citation extraction, negative constraint audit, and Audio Overview evaluation.
-- [ ] **Security & Ethics Sentinel (`04_Prompt_Injection_and_RAG_Audit_starter.py`):** Indirect prompt injection sanitizer and automated RAG Triad audit (Faithfulness, Answer Relevance, Context Recall).
+### 1. HNSW index
 
----
+```bash
+python 01_HNSW_Vector_Index.py
+```
 
-## How to Submit
-1. Push your squad's completed solution repository to GitHub.
-2. Go to the course website portal under **Week 5 (Mission 5) -> Problem Set ps05 & Submission**.
-3. Paste your public squad GitHub repository URL and click **Transmit Solution Link to Database**.
+This runs small deterministic smoke tests. To run the assignment-scale benchmark:
+
+```bash
+python 01_HNSW_Vector_Index.py --benchmark
+```
+
+The benchmark defaults to 25,000 vectors with 768 dimensions. Options include `--n`, `--dim`, `--queries`, `--m`, `--ef-construction`, and `--ef-search`. Runtime and quality measurements depend on the machine, random seed, and configuration.
+
+### 2. BM25 and RRF
+
+```bash
+python 02_BM25_and_RRF_Combiner.py
+```
+
+The demonstration uses BM25 parameters `k1=1.5`, `b=0.75`, and RRF smoothing constant `k=60`. The dense ranking in the demonstration is supplied as input; it is illustrative and is not generated by a learned embedding model.
+
+### 3. NotebookLM evidence evaluator
+
+```bash
+python 03_NotebookLM_RAG_Audit.py audit_evidence_template.json
+```
+
+The evaluator checks manually entered evidence. It does not upload sources, submit queries, click citation badges, inspect highlighted passages, generate audio, or independently verify NotebookLM behavior. Complete the JSON from actual observations before treating the resulting metrics as empirical findings. An incomplete evidence record is expected to produce an incomplete status and a non-zero exit code.
+
+### 4. Injection screening, RAG-triad proxy, and provenance
+
+```bash
+python 04_RAG_Provenance_and_Safety.py
+```
+
+The heuristic scanner detects a set of suspicious instruction patterns. Optional embedding screening compares text against example injection prompts. The current captured notebook run did not have `sentence-transformers` installed, so embedding screening was unavailable in that run.
+
+The RAG-triad values in the demonstration are **lexical-overlap proxy scores**, not validated semantic measures of entailment, relevance, or faithfulness.
+
+## Recorded observations
+
+The included executed notebook records the following HNSW benchmark run:
+
+| Measure | Recorded value |
+|---|---:|
+| Indexed vectors | 25,000 |
+| Vector dimensions | 768 |
+| Build time | 68.45 s |
+| Mean HNSW query latency | 5.096 ms |
+| Mean exact flat-search latency | 5.311 ms |
+| Measured speedup (flat latency / HNSW latency) | 1.04× |
+| Mean recall@10 | 0.250 |
+
+These are results from one run, not a general performance guarantee. The measured recall is low, so the small latency advantage should not be interpreted as a successful high-recall deployment. Re-run the benchmark with documented settings before comparing configurations.
+
+The notebook also records successful smoke tests for BM25/RRF and the safety/provenance component. For the safety demonstration, the heuristic detector flagged a malicious test string with `BLOCK_HEURISTIC`. Embedding screening was unavailable. The displayed RAG-triad scores of `1.0` are explicitly marked as lexical proxies.
+
+The NotebookLM evaluator reported **INCOMPLETE**: 3 source records, 5 query records, 5 citation records, 0 verified entailed citations, 3 negative-probe records, 0 verified refusals, and no recorded audio score or duration. The template records alone do not establish that those sources or queries were actually tested in NotebookLM.
+
+## Limitations and interpretation
+
+- HNSW is approximate. Its speed/recall trade-off must be assessed using the configuration and measurements from a particular run.
+- The BM25/RRF example uses a supplied dense ranking; it does not benchmark a complete dense-embedding retrieval system.
+- NotebookLM results require manual, evidence-backed observations. The evaluator validates the record's completeness; it is not an automated NotebookLM client.
+- Injection patterns are heuristic and can miss novel attacks or flag benign text. The optional embedding check is not a security guarantee.
+- The current RAG-triad implementation reports lexical proxies. These should not be presented as semantic evaluation or human-verified grounding.
+- A successful smoke test indicates that the exercised code path ran; it does not prove that every assignment criterion has been met.
+
+## Reproducibility and submission
+
+Record Python/dependency versions, machine details, benchmark parameters, and fresh output when rerunning experiments. Keep raw evidence for NotebookLM observations and distinguish verified results from missing evidence.
+
+See `PS05_Solution_Report.md` for the implementation-specific summary and `notebooklm_audit_report.md` for the current NotebookLM evidence status.
