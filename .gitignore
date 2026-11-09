@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+*_broken.py
+*.bak
+*.bak.json
+*.backup.json
