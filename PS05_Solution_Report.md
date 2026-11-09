@@ -72,7 +72,7 @@ These are evidence-record evaluation results, not a finding that NotebookLM itse
 
 `04_RAG_Provenance_and_Safety.py` scans retrieved text using regular-expression patterns for suspicious instructions, attempts to expose secrets or override system/developer instructions, certain exfiltration language, Markdown image URLs, and selected HTML-comment patterns. It optionally compares text embeddings with a set of example injection prompts using `sentence-transformers`.
 
-The executed notebook reports that the heuristic malicious-input test returned `BLOCK_HEURISTIC`. It also reports `sentence-transformers` as unavailable, so embedding screening did not run. This is a successful heuristic test only; it does not establish broad attack coverage or complete semantic screening.
+The executed notebook reports that the heuristic malicious-input test returned `BLOCK_HEURISTIC` and that `sentence-transformers` was unavailable in that run. In a subsequent local terminal run using the project virtual environment, the embedding model loaded and the safety/provenance smoke tests passed. Four tested delimiter formats returned `BLOCK_HEURISTIC`; a benign technical example returned `CLEAN`. However, a paraphrased injection returned `CLEAN` with embedding similarity approximately 0.462. These are limited test cases, not evidence of broad attack coverage or complete semantic screening.
 
 ### RAG-triad proxy
 
@@ -103,9 +103,9 @@ When rerunning, record the Python and dependency versions, machine, random seed,
 1. Tune HNSW and repeat the benchmark with a recall target, reporting both latency and recall.
 2. If claiming dense-sparse end-to-end retrieval, connect the RRF combiner to an actual dense retrieval ranking and evaluate relevant queries.
 3. Independently review the populated NotebookLM evidence record: source-upload confirmations, verbatim responses, citation badge interactions, highlighted passages, entailment decisions, negative-probe responses, and transcript-to-audio alignment. Update only claims supported by that review.
-4. Install and run optional embedding-based injection screening if that part of the experiment is required; report model and threshold details.
+4. Expand and evaluate embedding-based injection screening with a documented attack/benign regression set; report model and threshold details, false positives, and false negatives. The current local test uses a threshold of 0.72 and demonstrates at least one missed paraphrased injection.
 5. Replace or supplement lexical RAG-triad proxies with a justified semantic evaluator or human-reviewed evidence if semantic faithfulness is claimed.
 
 ## 8. Conclusion
 
-The repository contains working component implementations and an executed integration notebook. The captured results support the claims that the smoke-test paths ran, BM25/RRF produced rankings for supplied inputs, the heuristic detector flagged its test payload, and a provenance record was generated. They do **not** support claims of high-recall HNSW performance, fully validated semantic RAG-triad scores, successful embedding-based screening, or an independently completed NotebookLM empirical audit.
+The repository contains working component implementations and an executed integration notebook. The captured notebook results support the claims that the smoke-test paths ran, BM25/RRF produced rankings for supplied inputs, the heuristic detector flagged its test payload, and a provenance record was generated. Subsequent local terminal tests also confirm that embedding screening can run in the project virtual environment and detect the tested delimiter formats, but they reveal a paraphrased-injection detection gap. Neither set of results establishes high-recall HNSW performance, fully validated semantic RAG-triad scores, comprehensive injection detection, or an independently completed NotebookLM empirical audit.

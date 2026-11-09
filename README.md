@@ -86,7 +86,7 @@ The evaluator checks manually entered evidence. It does not upload sources, subm
 python 04_RAG_Provenance_and_Safety.py
 ```
 
-The heuristic scanner detects a set of suspicious instruction patterns. Optional embedding screening compares text against example injection prompts. The current captured notebook run did not have `sentence-transformers` installed, so embedding screening was unavailable in that run.
+The heuristic scanner detects a set of suspicious instruction patterns. Optional embedding screening compares text against example injection prompts. The captured notebook run did not have `sentence-transformers` installed, so embedding screening was unavailable in that historical run. A subsequent local terminal run using the project's `.venv` successfully loaded the embedding model and passed the safety/provenance smoke tests. This later result does not change what was recorded in the notebook.
 
 The RAG-triad values in the demonstration are **lexical-overlap proxy scores**, not validated semantic measures of entailment, relevance, or faithfulness.
 
@@ -106,7 +106,7 @@ The included executed notebook records the following HNSW benchmark run:
 
 These are results from one run, not a general performance guarantee. The measured recall is low, so the small latency advantage should not be interpreted as a successful high-recall deployment. Re-run the benchmark with documented settings before comparing configurations.
 
-The notebook also records successful smoke tests for BM25/RRF and the safety/provenance component. For the safety demonstration, the heuristic detector flagged a malicious test string with `BLOCK_HEURISTIC`. Embedding screening was unavailable. The displayed RAG-triad scores of `1.0` are explicitly marked as lexical proxies.
+The notebook records successful smoke tests for BM25/RRF and the safety/provenance component. Its historical safety demonstration flagged a malicious test string with `BLOCK_HEURISTIC`, but embedding screening was unavailable in that run. In a later local terminal validation, embedding screening was available, the smoke tests passed, and four tested delimiter formats returned `BLOCK_HEURISTIC`. A benign technical example returned `CLEAN`; one paraphrased injection also returned `CLEAN`, demonstrating a detection gap. These limited tests do not establish broad attack coverage. The displayed RAG-triad scores of `1.0` remain lexical proxies.
 
 The current NotebookLM evidence record contains 3 source records, 5 grounded queries, 22 citation records, 3 negative probes, and Audio Overview metadata. The evaluator reports **EVIDENCE RECORDS COMPLETE**. This is a structural check only: 22/22 citations and 3/3 refusals are recorded as verified in the JSON but remain subject to independent human review. The user confirmed the Audio Overview duration as 4,258 seconds and reported a 5/5 score on each rubric dimension; transcript-to-audio alignment remains pending independent review.
 
@@ -115,7 +115,7 @@ The current NotebookLM evidence record contains 3 source records, 5 grounded que
 - HNSW is approximate. Its speed/recall trade-off must be assessed using the configuration and measurements from a particular run.
 - The BM25/RRF example uses a supplied dense ranking; it does not benchmark a complete dense-embedding retrieval system.
 - NotebookLM results require manual, evidence-backed observations. The evaluator validates the record's completeness; it is not an automated NotebookLM client.
-- Injection patterns are heuristic and can miss novel attacks or flag benign text. The optional embedding check is not a security guarantee.
+- Injection patterns are heuristic and can miss novel attacks or flag benign text. Later local testing detected four tested delimiter formats, but a tested paraphrased injection returned `CLEAN`. Embedding screening is not a security guarantee, and the current tests do not establish general detection effectiveness.
 - The current RAG-triad implementation reports lexical proxies. These should not be presented as semantic evaluation or human-verified grounding.
 - A successful smoke test indicates that the exercised code path ran; it does not prove that every assignment criterion has been met.
 
