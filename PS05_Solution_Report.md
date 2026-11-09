@@ -13,7 +13,7 @@ The project is organized into four components and an integration notebook:
 3. a manual-evidence evaluator for a NotebookLM grounding audit;
 4. prompt-injection screening, RAG-triad proxy metrics, and a provenance log.
 
-The code and captured outputs demonstrate several working component paths. They do not establish that every empirical requirement in the assignment is complete. In particular, the NotebookLM audit evidence remains incomplete, the HNSW result has low recall, and the semantic embedding-based injection scan was unavailable in the captured run.
+The code and captured outputs demonstrate several working component paths. They do not establish that every empirical requirement in the assignment is complete. In particular, NotebookLM evidence records are populated but citation entailment, refusal judgments, and transcript-to-audio alignment still require independent human review; the HNSW result has low recall, and the semantic embedding-based injection scan was unavailable in the captured run.
 
 ## 2. HNSW vector index
 
@@ -53,16 +53,18 @@ For the exact identifier `SERIAL_NO_AURA_9982X`, the displayed BM25 ranking plac
 
 `03_NotebookLM_RAG_Audit.py` evaluates a manually populated JSON evidence record. It does not connect to NotebookLM or perform the experiment. It checks for source-upload evidence, five grounded queries, citation-level records, three unanswerable probes, and a two-minute audio overview with transcript and scores.
 
-The captured notebook evaluation reported:
+The current evidence record produces the following evaluator summary:
 
-- 3 source records, but source upload/ingestion not confirmed;
-- 5 query records and 5 citation records, but the actual queries/responses and citation evidence were incomplete;
-- 0 entailed citations verified and 0 citation badge interactions verified;
-- 3 negative probes recorded, but 0 proper refusals verified;
-- no audio score, duration, or transcript;
-- overall evidence status: **INCOMPLETE**, with 47 items requiring evidence or correction.
+- 3 source records and 5 grounded query records are present;
+- 22 citation records are present, with all 22 marked as entailed and all 22 citation-badge/highlight records populated;
+- 3 negative probes are present, with all 3 marked as appropriate refusals;
+- the Audio Overview duration is recorded as 4,258 seconds (1 hr 10 min 58 sec), confirmed by the user from the rendered Studio artifact;
+- the user reports assigning 5/5 on each audio rubric dimension;
+- evaluator status: **EVIDENCE RECORDS COMPLETE**.
 
-These are evidence-record evaluation results, not a finding that NotebookLM itself failed. The current file does not establish the real system's citation precision, refusal behavior, or audio quality. Those metrics should remain unverified until actual NotebookLM outputs are captured and reviewed.
+The record-completeness result is not independent validation. Source-based entailment, refusal quality, and line-by-line transcript-to-audio alignment remain subject to human review.
+
+These are evidence-record evaluation results, not a finding that NotebookLM itself failed. The current JSON records 22 citations marked as entailed, 3 probes marked as appropriate refusals, and a user-reported audio score of 5/5 on each rubric dimension with a confirmed duration of 4,258 seconds. The evaluator confirms record completeness only; citation entailment, refusal behavior, and transcript-to-audio alignment remain pending independent human review.
 
 ## 5. Prompt-injection screening, RAG-triad proxies, and provenance
 
@@ -100,10 +102,10 @@ When rerunning, record the Python and dependency versions, machine, random seed,
 
 1. Tune HNSW and repeat the benchmark with a recall target, reporting both latency and recall.
 2. If claiming dense-sparse end-to-end retrieval, connect the RRF combiner to an actual dense retrieval ranking and evaluate relevant queries.
-3. Complete the NotebookLM evidence record using actual source-upload confirmations, verbatim responses, citation badge interactions, highlighted passages, entailment decisions, negative-probe responses, and an actual audio transcript/duration.
+3. Independently review the populated NotebookLM evidence record: source-upload confirmations, verbatim responses, citation badge interactions, highlighted passages, entailment decisions, negative-probe responses, and transcript-to-audio alignment. Update only claims supported by that review.
 4. Install and run optional embedding-based injection screening if that part of the experiment is required; report model and threshold details.
 5. Replace or supplement lexical RAG-triad proxies with a justified semantic evaluator or human-reviewed evidence if semantic faithfulness is claimed.
 
 ## 8. Conclusion
 
-The repository contains working component implementations and an executed integration notebook. The captured results support the claims that the smoke-test paths ran, BM25/RRF produced rankings for supplied inputs, the heuristic detector flagged its test payload, and a provenance record was generated. They do **not** support claims of high-recall HNSW performance, fully validated semantic RAG-triad scores, successful embedding-based screening, or a completed NotebookLM empirical audit.
+The repository contains working component implementations and an executed integration notebook. The captured results support the claims that the smoke-test paths ran, BM25/RRF produced rankings for supplied inputs, the heuristic detector flagged its test payload, and a provenance record was generated. They do **not** support claims of high-recall HNSW performance, fully validated semantic RAG-triad scores, successful embedding-based screening, or an independently completed NotebookLM empirical audit.

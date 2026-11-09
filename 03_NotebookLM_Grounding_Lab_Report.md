@@ -2,69 +2,44 @@
 
 **Course:** Conversational AI, Winter Semester 2026/2027  
 **Component:** PS05 Part 3 — NotebookLM grounding, citation audit, negative probes, and Audio Overview  
-**Status:** **INCOMPLETE — empirical observations are not yet verified**
+**Status:** **Evidence records populated — independent human review pending**
 
-## Purpose and method
+## Purpose and scope
 
-The assignment asks for a manual evaluation of NotebookLM using three source documents, five grounded queries, three questions that cannot be answered from the source corpus, and an Audio Overview of at least two minutes. The evaluator in `03_NotebookLM_RAG_Audit.py` reads observations entered into `audit_evidence_template.json`; it does not operate NotebookLM.
+`03_NotebookLM_RAG_Audit.py` evaluates manually recorded observations in `audit_evidence_template.json`. It does not operate NotebookLM and cannot independently confirm that a citation entails a claim, that a refusal is appropriate, or that an audio transcript matches the rendered audio. The evaluator checks record completeness and required fields.
 
-## Captured evaluator output
+## Current recorded results
 
-The executed integration notebook recorded the following:
+The evaluator was rerun against the current JSON evidence record. It reports:
 
-| Check | Recorded result |
-|---|---:|
-| Source records | 3 |
-| Grounded query records | 5 |
-| Citation records | 5 |
-| Verified entailed citations | 0 |
-| Citation precision field | 0.0 |
-| Citation badge interactions verified | 0 |
-| Highlighted source spans recorded | 0 |
-| Negative-probe records | 3 |
-| Verified proper refusals | 0 |
-| Epistemic refusal-rate field | 0.0 |
-| Audio average score | Not available |
-| Audio duration | Not available |
-| Evaluator status | **INCOMPLETE** |
-| Items requiring evidence/correction | 47 |
+| Check | Recorded result | Interpretation |
+|---|---:|---|
+| Source records | 3 | Three source records entered |
+| Grounded query records | 5 | Five query records entered |
+| Citation records | 22 | 22 citation-level records entered |
+| Citations marked as entailed | 22/22 (100%) | Recorded judgments; independent claim-to-passage review pending |
+| Citation badge interactions | 22 | Interactions recorded in the evidence JSON |
+| Highlighted source spans | 22 | Source-span records entered |
+| Negative probes | 3 | Three unanswerable-probe records entered |
+| Probes marked as appropriate refusals | 3/3 (100%) | Recorded judgments; independent response review pending |
+| Audio rubric average | 5.0/5 | User-reported score: 5/5 for factual fidelity, persona differentiation, and pedagogical value |
+| Audio duration | 4,258 seconds (1 hr 10 min 58 sec) | Confirmed by the user from the rendered NotebookLM Studio artifact |
+| Evaluator result | `EVIDENCE RECORDS COMPLETE` | Structural completeness only; not an independent empirical validation |
 
-The zero values mean that no positive verification was recorded in the supplied evidence data. They must not be interpreted as proof that NotebookLM generated no citations or always failed to refuse. Likewise, the three probe records do not prove that the probes were actually executed in NotebookLM.
+## Audio Overview verification note
 
-## Required evidence to complete the experiment
+The user reports that the rendered Studio artifact is titled *How Structured Memory Prevents AI Hallucinations*, with reference ID `3127ae4d-ccc5-41f9-afb0-5bc62196c3f5`, and confirmed its duration as 1 hr 10 min 58 sec (4,258 seconds). The user also reports having evaluated the artifact and assigned 5/5 for factual fidelity, persona differentiation, and pedagogical value. The recorded rubric rationale discusses RAG parametric/non-parametric memory, DPR, BM25/RRF, GraphRAG and Leiden community detection, epistemic limitations, and distinct dialogue roles.
 
-### 1. Source ingestion
+These details are documented as user-confirmed observations. **Independent line-by-line comparison of the supplied dialogue transcript with the rendered audio remains pending**, as does independent review of the source-based claims and scoring. The JSON field values should not be represented as externally or independently audited merely because the evaluator accepts them.
 
-For each of the three intended sources, record its exact title, confirm that it was uploaded, and add an observation that supports successful ingestion. Do not mark upload as confirmed based only on the planned source list.
+## Required human review before claiming validated metrics
 
-### 2. Five grounded queries and citations
-
-For every query, preserve the exact question and actual NotebookLM response. For every citation displayed, record:
-
-- the claim the citation is intended to support;
-- whether the citation badge was clicked;
-- the highlighted source passage;
-- whether that passage entails the claim;
-- a short rationale for the entailment decision.
-
-Compute citation precision only from reviewed citations, and show the numerator and denominator. If no citation was reviewed, report the metric as not established rather than claiming a measured score.
-
-### 3. Three unanswerable probes
-
-Preserve the exact question and actual response. Explain why the source corpus does not contain enough information to answer. Record whether NotebookLM refused, qualified the answer, or supplied unsupported content. A generic disclaimer alone is not sufficient evidence of a proper refusal.
-
-### 4. Audio Overview
-
-Record evidence that the Audio Overview was generated, the audio reference, measured duration, and a verbatim two-minute transcript. Confirm whether the transcript is verbatim. Score factual fidelity, persona differentiation, and pedagogical value from 1 to 5, with evidence-based notes. Do not invent a transcript or label a paraphrase as verbatim.
-
-## Metric definitions
-
-- **Citation precision:** entailed citations verified ÷ all citations evaluated.
-- **Epistemic refusal rate:** unanswerable probes with a verified appropriate refusal/qualification ÷ unanswerable probes evaluated.
-- **Audio rating:** mean of the three rubric scores, calculated only after the audio and transcript have been reviewed.
-
-Report counts as well as ratios. If evidence is missing, label the metric **not verified** or **not available**.
+1. **Citation entailment:** inspect all 22 citation badges and highlighted spans, and verify that each cited passage supports the specific associated claim. Record corrections and rationales where needed.
+2. **Negative probes:** inspect the actual NotebookLM response to each of U1–U3 and confirm that each appropriately acknowledges missing information rather than guessing or using unrelated evidence.
+3. **Audio/transcript alignment:** compare the supplied transcript with the rendered artifact line by line. If it is not verbatim, correct the transcript and its status rather than claiming verbatim alignment.
+4. **Audio scoring:** retain the 5/5 rubric scores as the user's evaluation; label them as independently reviewed only after a reviewer checks the audio and rubric evidence.
+5. Rerun `python 03_NotebookLM_RAG_Audit.py audit_evidence_template.json` after any evidence changes and refresh the saved notebook output.
 
 ## Conclusion
 
-The evaluator executed and correctly marked the evidence record as incomplete. The current repository does not establish a measured NotebookLM citation-precision score, refusal rate, or Audio Overview rating. Complete the evidence template from actual NotebookLM observations and rerun the evaluator before making performance claims.
+The evidence JSON is populated and the evaluator's structural checks pass. The recorded metrics are 22/22 citations marked entailed, 3/3 negative probes marked as appropriate refusals, and a user-reported audio average of 5.0/5 for a confirmed 4,258-second artifact. These values are **recorded observations, not yet independently validated findings**. The remaining work is a human audit of claim-to-passage entailment, refusal responses, and transcript-to-audio alignment.

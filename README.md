@@ -78,7 +78,7 @@ The demonstration uses BM25 parameters `k1=1.5`, `b=0.75`, and RRF smoothing con
 python 03_NotebookLM_RAG_Audit.py audit_evidence_template.json
 ```
 
-The evaluator checks manually entered evidence. It does not upload sources, submit queries, click citation badges, inspect highlighted passages, generate audio, or independently verify NotebookLM behavior. Complete the JSON from actual observations before treating the resulting metrics as empirical findings. An incomplete evidence record is expected to produce an incomplete status and a non-zero exit code.
+The evaluator checks manually entered evidence. It does not upload sources, submit queries, click citation badges, inspect highlighted passages, generate audio, or independently verify NotebookLM behavior. Complete the JSON from actual observations before treating the resulting metrics as empirical findings. A populated record can pass structural checks while its empirical judgments still require independent human review.
 
 ### 4. Injection screening, RAG-triad proxy, and provenance
 
@@ -108,7 +108,7 @@ These are results from one run, not a general performance guarantee. The measure
 
 The notebook also records successful smoke tests for BM25/RRF and the safety/provenance component. For the safety demonstration, the heuristic detector flagged a malicious test string with `BLOCK_HEURISTIC`. Embedding screening was unavailable. The displayed RAG-triad scores of `1.0` are explicitly marked as lexical proxies.
 
-The NotebookLM evaluator reported **INCOMPLETE**: 3 source records, 5 query records, 5 citation records, 0 verified entailed citations, 3 negative-probe records, 0 verified refusals, and no recorded audio score or duration. The template records alone do not establish that those sources or queries were actually tested in NotebookLM.
+The current NotebookLM evidence record contains 3 source records, 5 grounded queries, 22 citation records, 3 negative probes, and Audio Overview metadata. The evaluator reports **EVIDENCE RECORDS COMPLETE**. This is a structural check only: 22/22 citations and 3/3 refusals are recorded as verified in the JSON but remain subject to independent human review. The user confirmed the Audio Overview duration as 4,258 seconds and reported a 5/5 score on each rubric dimension; transcript-to-audio alignment remains pending independent review.
 
 ## Limitations and interpretation
 
